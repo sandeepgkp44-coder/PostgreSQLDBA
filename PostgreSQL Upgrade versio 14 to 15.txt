@@ -1,0 +1,44 @@
+PostgreSQL Upgrade versio 14 to 15. 
+
+
+Pre-Upgrade Checklist
+✅ Backup your data (pg_dumpall, pg_basebackup, or filesystem snapshot).
+
+✅ Check for deprecated features or incompatible extensions.
+
+✅ Confirm both PostgreSQL 14 and 15 are installed side-by-side.
+
+⚙️ Method 1: pg_upgrade (Fast, Minimal Downtime)
+Step-by-step:
+
+bash
+# Stop PostgreSQL services
+sudo systemctl stop postgresql
+
+# Run pg_upgrade in check mode first
+sudo -u postgres /usr/lib/postgresql/15/bin/pg_upgrade \
+  --old-datadir=/var/lib/postgresql/14/main \
+  --new-datadir=/var/lib/postgresql/15/main \
+  --old-bindir=/usr/lib/postgresql/14/bin \
+  --new-bindir=/usr/lib/postgresql/15/bin \
+  --check
+
+# If check passes, run actual upgrade
+sudo -u postgres /usr/lib/postgresql/15/bin/pg_upgrade \
+  --old-datadir=/var/lib/postgresql/14/main \
+  --new-datadir=/var/lib/postgresql/15/main \
+  --old-bindir=/usr/lib/postgresql/14/bin \
+  --new-bindir=/usr/lib/postgresql/15/bin
+
+# Post-upgrade cleanup
+./analyze_new_cluster.sh
+./delete_old_cluster.sh
+Use --link for faster upgrade if you have a backup.
+
+🧪 Method 2: Logical Dump/Restore (Safe but Slower)
+bash
+# Dump from v14
+pg_dumpall -U postgres > full_dump.sql
+
+# Start v15 and restore
+psql -U postgres -f full_dump.sql
