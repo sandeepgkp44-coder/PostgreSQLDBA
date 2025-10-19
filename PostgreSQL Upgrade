@@ -1,0 +1,57 @@
+##Key Considerations Before Upgrade
+#PostgreSQL 9.6 is EOL: No more security updates.
+
+#Direct upgrade is possible using pg_upgrade, but not in-place.
+
+#Backup first: Always take a full backup before starting.
+
+#Extensions & configs: Check compatibility of extensions, custom configs, and client tools.
+
+# Upgrade Methods
+#1. Using pg_upgrade (Recommended for speed)
+#Fastest method with minimal downtime.
+
+#Steps:
+
+#bash
+# Install PostgreSQL 14 alongside 9.6
+sudo apt install postgresql-14
+
+# Stop both clusters
+sudo systemctl stop postgresql
+
+# Run pg_upgrade
+sudo -u postgres /usr/lib/postgresql/14/bin/pg_upgrade \
+  --old-datadir=/var/lib/postgresql/9.6/main \
+  --new-datadir=/var/lib/postgresql/14/main \
+  --old-bindir=/usr/lib/postgresql/9.6/bin \
+  --new-bindir=/usr/lib/postgresql/14/bin \
+  --check
+
+# If check passes, run actual upgrade
+sudo -u postgres /usr/lib/postgresql/14/bin/pg_upgrade \
+  --old-datadir=/var/lib/postgresql/9.6/main \
+  --new-datadir=/var/lib/postgresql/14/main \
+  --old-bindir=/usr/lib/postgresql/9.6/bin \
+  --new-bindir=/usr/lib/postgresql/14/bin
+
+# Analyze and clean up
+./analyze_new_cluster.sh
+./delete_old_cluster.sh
+#Use --link option for faster upgrade if you have a snapshot backup.
+
+#2. Logical Replication (for large or complex setups)
+#Set up PostgreSQL 14 on a new server.
+
+#Use pg_dump and pg_restore or pglogical for replication.
+
+#Ideal when OS upgrade or infra change is also planned.
+
+#Post-Upgrade Checklist
+#Verify roles, permissions, and ownerships.
+
+#Rebuild indexes if needed (REINDEX).
+
+#Test application connectivity and performance.
+
+#Monitor logs for errors or deprecated features.
