@@ -1,0 +1,22 @@
+PostgreSQL Installation Links by Platform
+-----------------------------------------
+
+Linux Distributions:
+
+1. Debian:
+   https://www.postgresql.org/download/linux/debian/
+
+2. Ubuntu:
+   https://www.postgresql.org/download/linux/ubuntu/
+
+3. Red Hat / Rocky / CentOS / AlmaLinux:
+   https://www.postgresql.org/download/linux/redhat/
+
+4. SUSE / openSUSE:
+   https://www.postgresql.org/download/linux/suse/
+
+macOS:
+https://www.postgresql.org/download/macosx/
+
+Windows:
+https://www.postgresql.org/download/windows/
